@@ -19,13 +19,13 @@
 		<div class="staff-slider" style="margin-top: 40px;overflow: hidden!important;">
 			<div class="">
 				<form id="image-rec" method="post" enctype="multipart/form-data" action='http://52.11.126.190/image/example.php'>
-				<div class="image-upload" style="margin-top: 20px">
+				<div class="image-upload" style="margin-top: 20px; margin-bottom: 20px">
+					<h3>طلب مساعدة طبية</h3>
+					<p>لطلب مساعدة طبية برجاء الضغط علي الزر بالاسفل وتصوير المريض ثم الضغط علي ارسال طلب المساعدة</p>
 					<label for="file-input">
 					<img class="scale-hover" src="<?= base_url()."assets/"; ?>images/pictures/sos.png" style="margin-top: 8px; width: 250px!important; height: 250px!important; border-radius: 150px; margin-left: auto; margin-right: auto;">
 					</label>
 					<input id="file-input" type="file" name="userfile"/>
-					<h3>طلب مساعدة طبية</h3>
-					<p>لطلب مساعدة طبية برجاء الضغط علي الزر بالاعلي وتصوير المريض ثم الضغط علي ارسال طلب المساعدة</p>
 				</div>
 				</form>
 
@@ -40,19 +40,21 @@ $('#file-input').on('change', function()
   $("#image-rec").ajaxForm({ 
 	 success:function(data){
 		 obj = JSON.parse(data);
+		 //alert(obj);
 		 //console.log(obj);
 		 var id = obj.results["0"].item.custom;
+		 //alert(id);
+		 if(id !=== 0){
 		 $(".hj-image").attr("src",obj.results["0"].image.thumb_120);
 		 
-		var post_url = "<?php echo base_url() . '/home/get_user_data/' ?>" + id;
+		var post_url = "<?php echo base_url() . 'index.php/home/get_user_data/' ?>" + id;
 		$.ajax({
 			type: "POST",
 			url: post_url,
 			success: function(user)
 			{
-				console.log(user);
-				if(user != false){
-					
+				//console.log(user);
+				if(user != null){
 					$(".hj-name").append(user.name);
 					$(".hj-number").append(user.hj_num);
 					$(".hj-passnum").append(user.passport_number);
@@ -75,16 +77,23 @@ $('#file-input').on('change', function()
 				alert('error');
 			}
 		}); //end AJAX
-        
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
+	 }else{
+	  
+	  
+	    $(".hj-name").append("غير مسجل بالنظام");
+	  
+	  	$(".hj-image").hide();
+		$(".hj-number").append(user.hj_num);
+		$(".hj-passnum").hide();
+		$(".hj-mobile").hide();
+		$(".hj-blood").hide();
+	  
+		$('.modal-menu').toggleClass('active-modal-menu');
+		$('.modal-menu-background').toggleClass('active-modal-menu-background');
+		$('.open-modal-menu').toggleClass('rotate-45');	
+	 	 
+     
+     }
 		 
 		
 	 },
